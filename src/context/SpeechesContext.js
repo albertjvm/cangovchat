@@ -22,7 +22,16 @@ const fetchSpeeches = async ({ pageParam = 0 }) => {
             content: content?.en.replace(/<.*?>/g, ""),
             title: h1?.en,
             subtitle: h2?.en
-        }))
+        })).sort((a, b) => {
+            let aId = parseInt(a.source_id);
+            let bId = parseInt(b.source_id);
+
+            if (isNaN(aId) || isNaN(bId)) {
+                return (new Date(a.time)).getTime() - (new Date(b.time)).getTime()
+            } else {
+                return parseInt(a.source_id) - parseInt(b.source_id);
+            }
+        })
     };
 };
 

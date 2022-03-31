@@ -53,6 +53,8 @@ export const Main = () => {
         };
     }, [handleScrollToTop]);
 
+    console.log(pages);
+
     return (
         <div className="Main">
             <div ref={topRef}>{isFetchingNextPage ? ' Loading...' : ''}</div>

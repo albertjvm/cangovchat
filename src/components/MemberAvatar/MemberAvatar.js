@@ -13,7 +13,6 @@ export const MemberAvatar = ({ memberId }) => {
         );
     }, [memberId, members]);
     
-    console.log(member);
     return (
         <div className='MemberAvatar'>
             { (!!member && !isError) ? 
