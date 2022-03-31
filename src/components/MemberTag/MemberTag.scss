@@ -1,0 +1,36 @@
+@import '../../colors.scss';
+
+.MemberTag {
+    display: inline-block;
+    max-width: 50vw;
+    width: fit-content;
+    white-space: nowrap;
+    color: rgb(29,28,29);
+    line-height: 27px;
+    padding: 2px 12px;
+    border-radius: 5rem;
+    background-color: lightgrey;
+    font-weight: bold;
+    font-size: 14px;
+
+    &.bloc {
+        background-color: $bloc-primary;
+        color: white;
+    }
+    &.conservative {
+        background-color: $conservative-primary;
+        color: white;
+    }
+    &.green {
+        background-color: $green-primary;
+        color: white;
+    }
+    &.liberal {
+        background-color: $liberal-primary;
+        color: white;
+    }
+    &.ndp {
+        background-color: $ndp-primary;
+        color: white;
+    }
+}
