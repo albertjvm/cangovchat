@@ -1,0 +1,22 @@
+.SearchBar {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+
+    input {
+        flex: 1;
+        border: none;
+        font-size: large;
+        padding: 10px 20px;
+    }
+
+    button {
+        position: absolute;
+        right: 0px;
+        font-size: large;
+        background: none;
+        border: none;
+        height: 100%;
+        width: 50px;
+    }
+}

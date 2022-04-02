@@ -1,5 +1,6 @@
 import React, { useCallback, useContext, useEffect, useRef } from "react";
 import { SpeechesContext } from "../../context/SpeechesContext";
+import { SearchBar } from "../SearchBar/SearchBar";
 import { Speech } from "../Speech/Speech";
 import './Main.scss';
 
@@ -53,20 +54,21 @@ export const Main = () => {
         };
     }, [handleScrollToTop]);
 
-    console.log(pages);
-
     return (
         <div className="Main">
-            <div ref={topRef}>{isFetchingNextPage ? ' Loading...' : ''}</div>
-            {pages.map((page, p) => (
-                <div key={p}>
-                    {page.objects.map((speech, i) => (
-                        <Speech key={`${p}-${i}`} {...speech} />
-                    ))}
-                    {p === 0 && <div ref={pageRef}></div>}
-                </div>
-            ))}
-            <div ref={bottomRef}></div>
+            <SearchBar />
+            <div className="Main-scroll">
+                <div ref={topRef}>{isFetchingNextPage ? ' Loading...' : ''}</div>
+                {pages.map((page, p) => (
+                    <div key={p}>
+                        {page.objects.map((speech, i) => (
+                            <Speech key={`${p}-${i}`} {...speech} />
+                        ))}
+                        {p === 0 && <div ref={pageRef}></div>}
+                    </div>
+                ))}
+                <div ref={bottomRef}></div>
+            </div>
         </div>
     );
 };

@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import { Main } from './components/Main/Main';
 import { MembersProvider } from './context/MembersContext';
 import { SpeechesProvider } from './context/SpeechesContext';
+import { SearchProvider } from './context/SearchContext';
 
 const queryClient = new QueryClient();
 
@@ -11,9 +12,11 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <MembersProvider>
         <SpeechesProvider>
-          <div className="App">
-            <Main />
-          </div>
+          <SearchProvider>
+            <div className="App">
+              <Main />
+            </div>
+          </SearchProvider>
         </SpeechesProvider>
       </MembersProvider>
     </QueryClientProvider>

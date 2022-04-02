@@ -1,0 +1,15 @@
+.SpeechContent {
+    margin-top: 4px;
+    margin-bottom: 4px;
+    color:rgb(29, 28, 29);
+    font-weight: 500;
+    font-size: 14px;
+
+    .hightlight {
+        font-weight: bold;
+    }
+
+    .unhighlight {
+        color: rgba(black, .3);
+    }
+}
