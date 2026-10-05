@@ -8,7 +8,7 @@ export const Main = () => {
     const topRef = useRef(null);
     const bottomRef = useRef(null);
     const pageRef = useRef(null);
-    const { pages = [], fetchNextPage, isFetchingNextPage } = useContext(SpeechesContext);
+    const { pages = [], fetchNextPage, isFetchingNextPage, isLoading, isError, error } = useContext(SpeechesContext);
     const firstScroll = useRef(true);
     const disableScroll = useRef(false);
 
@@ -54,11 +54,26 @@ export const Main = () => {
         };
     }, [handleScrollToTop]);
 
+    if (isError) {
+        return (
+            <div className="Main">
+                <SearchBar />
+                <div className="Main-scroll Main-empty">
+                    <p>We couldn’t load the latest speeches.</p>
+                    <small>{error?.message || 'Please try again in a moment.'}</small>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="Main">
             <SearchBar />
             <div className="Main-scroll">
-                <div ref={topRef}>{isFetchingNextPage ? ' Loading...' : ''}</div>
+                <div ref={topRef}>{isFetchingNextPage || isLoading ? ' Loading...' : ''}</div>
+                {pages.length === 0 && isLoading ? (
+                    <div className="Main-empty">Loading speeches...</div>
+                ) : null}
                 {pages.map((page, p) => (
                     <div key={p}>
                         {page.objects.map((speech, i) => (
