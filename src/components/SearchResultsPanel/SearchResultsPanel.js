@@ -1,5 +1,6 @@
 import { useContext } from 'react';
 import { SearchContext } from '../../context/SearchContext';
+import { formatDisplayDate } from '../../utils/dateUtils';
 import { normalizeSearchTerm } from '../../utils/search';
 import './SearchResultsPanel.scss';
 
@@ -27,47 +28,132 @@ const highlightText = (value = '', query = '') => {
     );
 };
 
-export const SearchResultsPanel = ({ results = [], onSelect }) => {
-    const { searchString, setSearchOpen } = useContext(SearchContext);
+export const SearchResultsPanel = ({
+    results = [],
+    onSelect,
+    onLoadMore,
+    hasMore = false,
+    isLoadingMore = false,
+    earliestAvailableDate = '',
+}) => {
+    const {
+        searchString,
+        clearSearchString,
+        setSearchOpen,
+        setSearchDraft,
+    } = useContext(SearchContext);
+
+    const closeSearch = () => setSearchOpen(false);
+
+    const clearResults = () => {
+        clearSearchString();
+        if (typeof setSearchDraft === 'function') {
+            setSearchDraft('');
+        }
+        closeSearch();
+    };
 
     const handleSelect = (resultId) => {
-        setSearchOpen(false);
+        closeSearch();
         onSelect(resultId);
     };
 
+    const expandDateRangeLabel = isLoadingMore ? 'Expanding date range...' : 'Expand date range';
+
     return (
-        <aside className='SearchResultsPanel'>
+        <aside className='SearchResultsPanel' onClick={closeSearch}>
+            {isLoadingMore && (
+                <div className='SearchResultsPanel-status' role='status' aria-live='polite'>
+                    <span className='SearchResultsPanel-spinner' aria-hidden='true' />
+                    <strong>Searching earlier speeches…</strong>
+                    <small>Expanding the date range and loading more matches.</small>
+                </div>
+            )}
             <div className='SearchResultsPanel-header'>
                 <span>Search results</span>
-                <strong>{results.length}</strong>
+                <div className='SearchResultsPanel-headerActions'>
+                    <strong>{results.length}</strong>
+                    {searchString.trim() && (
+                        <button
+                            type='button'
+                            className='SearchResultsPanel-clear'
+                            aria-label='Clear search results'
+                            title='Clear search results'
+                            onClick={(event) => {
+                                event.stopPropagation();
+                                clearResults();
+                            }}
+                        >
+                            ×
+                        </button>
+                    )}
+                </div>
             </div>
             {results.length === 0 ? (
                 <div className='SearchResultsPanel-empty'>
                     <strong>No results found</strong>
-                    <span>Try a different keyword or party filter.</span>
+                    <span>
+                        {hasMore
+                            ? 'No matches in the current date range. Expand the search window.'
+                            : 'Try a different keyword, date range, or party filter.'}
+                    </span>
+                    {hasMore && (
+                        <>
+                            <button
+                                type='button'
+                                className='SearchResultsPanel-loadMore'
+                                onClick={(event) => {
+                                    event.stopPropagation();
+                                    setSearchOpen(true);
+                                }}
+                                disabled={isLoadingMore}
+                            >
+                                {expandDateRangeLabel}
+                            </button>
+                            <small className='SearchResultsPanel-loadMoreHint'>Increase the date window to keep searching further back.</small>
+                        </>
+                    )}
                 </div>
             ) : (
-                <div className='SearchResultsPanel-list'>
-                    {results.map((result) => (
-                        <button
-                            key={result.id}
-                            type='button'
-                            className='SearchResultsPanel-item'
-                            onClick={() => handleSelect(result.id)}
-                        >
-                            <div className='SearchResultsPanel-meta'>
-                                <span>{result.memberName || result.attribution}</span>
-                                <time>{result.time}</time>
-                            </div>
-                            <div
-                                className='SearchResultsPanel-snippet'
-                                dangerouslySetInnerHTML={{
-                                    __html: highlightText(result.snippet || '', searchString),
+                <>
+                    <div className='SearchResultsPanel-list'>
+                        {results.map((result) => (
+                            <button
+                                key={result.id}
+                                type='button'
+                                className='SearchResultsPanel-item'
+                                onClick={() => handleSelect(result.id)}
+                            >
+                                <div className='SearchResultsPanel-meta'>
+                                    <span>{result.memberName || result.attribution}</span>
+                                    <time>{result.time}</time>
+                                </div>
+                                <div
+                                    className='SearchResultsPanel-snippet'
+                                    dangerouslySetInnerHTML={{
+                                        __html: highlightText(result.snippet || '', searchString),
+                                    }}
+                                />
+                            </button>
+                        ))}
+                    </div>
+                    {hasMore && (
+                        <div className='SearchResultsPanel-footer'>
+                            <button
+                                type='button'
+                                className='SearchResultsPanel-loadMore'
+                                onClick={(event) => {
+                                    event.stopPropagation();
+                                    setSearchOpen(true);
                                 }}
-                            />
-                        </button>
-                    ))}
-                </div>
+                                disabled={isLoadingMore}
+                            >
+                                {expandDateRangeLabel}
+                            </button>
+                            <small className='SearchResultsPanel-loadMoreHint'>Increase the date window to keep searching further back.</small>
+                        </div>
+                    )}
+                </>
             )}
         </aside>
     );

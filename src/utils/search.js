@@ -1,3 +1,5 @@
+import { getDateKey } from './dateUtils';
+
 export const normalizeSearchTerm = (value = '') => {
   return String(value ?? '').trim().toLowerCase();
 };
@@ -56,17 +58,27 @@ export const getSearchResultSnippet = (content = '', query = '', maxLength = 180
   return snippet;
 };
 
-export const buildTranscriptIndex = (speeches = [], members = [], query = '', selectedParty = 'all') => {
+export const buildTranscriptIndex = (speeches = [], members = [], query = '', selectedParty = 'all', dateRange = {}) => {
   const memberMap = new Map(members.map((member) => [member.id, member]));
   const normalizedQuery = normalizeSearchTerm(query);
+  const { startDate = '', endDate = '' } = dateRange || {};
 
   return speeches
     .map((speech, index) => {
       const member = memberMap.get(speech.memberId) ?? {};
       const memberName = member.name ?? speech.attribution ?? '';
       const memberParty = member.party ?? '';
+      const speechDate = getDateKey(speech?.time);
 
       if (!matchesPartyFilter(memberParty, selectedParty)) {
+        return null;
+      }
+
+      if (startDate && speechDate && speechDate < startDate) {
+        return null;
+      }
+
+      if (endDate && speechDate && speechDate > endDate) {
         return null;
       }
 
@@ -131,11 +143,17 @@ export const buildTranscriptIndex = (speeches = [], members = [], query = '', se
       return entry.score > 0;
     })
     .sort((a, b) => {
-      if (normalizedQuery) {
-        return b.score - a.score || (a.time || '').localeCompare(b.time || '');
+      const timeDiff = (b.time || '').localeCompare(a.time || '');
+
+      if (timeDiff !== 0) {
+        return timeDiff;
       }
 
-      return (a.time || '').localeCompare(b.time || '');
+      if (normalizedQuery) {
+        return b.score - a.score;
+      }
+
+      return 0;
     });
 };
 

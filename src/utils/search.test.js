@@ -91,4 +91,73 @@ describe('search utilities', () => {
     expect(indexed[0].score).toBeGreaterThan(indexed[1].score);
     expect(indexed[0].snippet).toContain('tax relief');
   });
+
+  test('orders search results by timestamp before relevance', () => {
+    const speeches = [
+      {
+        source_id: 'older',
+        memberId: 'm-1',
+        content: 'The budget update includes a broad tax credit for families.',
+        attribution: 'Jane Brown',
+        title: 'Budget policy',
+        subtitle: '',
+        time: '2026-01-01 09:00:00'
+      },
+      {
+        source_id: 'newer',
+        memberId: 'm-2',
+        content: 'The budget approval comes before the tax changes are finalized.',
+        attribution: 'John Smith',
+        title: 'Budget update',
+        subtitle: '',
+        time: '2026-01-03 12:00:00'
+      }
+    ];
+
+    const members = [
+      { id: 'm-1', name: 'Jane Brown', party: 'Liberal' },
+      { id: 'm-2', name: 'John Smith', party: 'Conservative' }
+    ];
+
+    const indexed = buildTranscriptIndex(speeches, members, 'budget', 'all');
+
+    expect(indexed[0].source_id).toBe('newer');
+    expect(indexed[1].source_id).toBe('older');
+  });
+
+  test('filters search results to a selected date range', () => {
+    const speeches = [
+      {
+        source_id: 'older',
+        memberId: 'm-1',
+        content: 'Budget discussions began earlier this year.',
+        attribution: 'Jane Brown',
+        title: 'Budget policy',
+        subtitle: '',
+        time: '2026-01-01 09:00:00'
+      },
+      {
+        source_id: 'newer',
+        memberId: 'm-2',
+        content: 'The budget approval is now in discussion.',
+        attribution: 'John Smith',
+        title: 'Budget update',
+        subtitle: '',
+        time: '2026-02-15 12:00:00'
+      }
+    ];
+
+    const members = [
+      { id: 'm-1', name: 'Jane Brown', party: 'Liberal' },
+      { id: 'm-2', name: 'John Smith', party: 'Conservative' }
+    ];
+
+    const indexed = buildTranscriptIndex(speeches, members, 'budget', 'all', {
+      startDate: '2026-02-01',
+      endDate: '2026-02-28'
+    });
+
+    expect(indexed).toHaveLength(1);
+    expect(indexed[0].source_id).toBe('newer');
+  });
 });
