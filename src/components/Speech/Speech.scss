@@ -1,12 +1,14 @@
 .Speech {
     box-sizing: border-box;
-    padding: 8px 20px;
+    padding: 10px 20px 12px;
     display: flex;
     flex-direction: row;
+    border-bottom: 1px solid rgba(29, 28, 29, 0.06);
+    background: rgba(255, 255, 255, 0.12);
 
     .Speech-left {
-        // width: 36px;
-        margin-right: 8px;
+        margin-right: 12px;
+        padding-top: 2px;
     }
 
     .Speech-right {
@@ -16,13 +18,17 @@
         .Speech-row {
             display: flex;
             flex-direction: row;
-            align-items: flex-end;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
         }
     }
 
     .Speech-timestamp {
-        font-size: 12px;
+        font-size: 11px;
         color: rgb(97, 96, 97);
+        line-height: 1.2;
+        letter-spacing: 0.01em;
     }
 
     .Speech-viewmore {
@@ -36,8 +42,14 @@
 }
 
 @media screen and (max-width: 600px) {
+    .Speech {
+        padding-left: 14px;
+        padding-right: 14px;
+    }
+
     .Speech .Speech-right .Speech-row {
         flex-direction: column;
         align-items: flex-start;
+        gap: 4px;
     }
 }

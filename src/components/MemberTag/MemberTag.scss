@@ -5,12 +5,13 @@
     width: fit-content;
     white-space: nowrap;
     color: rgb(29,28,29);
-    line-height: 27px;
-    padding: 2px 12px;
-    border-radius: 5rem;
-    background-color: lightgrey;
-    font-weight: bold;
-    font-size: 14px;
+    line-height: 1.25;
+    padding: 5px 10px;
+    border-radius: 999px;
+    background-color: #e5e7eb;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.01em;
 
     &.bloc {
         background-color: $bloc-primary;

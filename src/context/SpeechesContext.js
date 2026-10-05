@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useInfiniteQuery } from "react-query";
 import { API_URL, DEFAULT_HEADERS, DEFAULT_QUERY_OPTIONS } from "../config";
 import { normalizeSpeech } from "../utils/transcript";
@@ -37,8 +37,8 @@ const fetchSpeeches = async ({ pageParam = 0 }) => {
 };
 
 export const SpeechesProvider = ({ children }) => {
-    const { 
-        data, 
+    const {
+        data,
         fetchNextPage,
         isFetchingNextPage,
         isLoading,
@@ -54,10 +54,22 @@ export const SpeechesProvider = ({ children }) => {
         }
     });
 
+    const speeches = useMemo(
+        () => (data?.pages ?? []).flatMap((page) => page.objects ?? []),
+        [data]
+    );
+
+    const hasMore = Boolean(
+        data?.pages?.length &&
+        data.pages[data.pages.length - 1]?.pagination?.next_url !== null
+    );
+
     return (
         <SpeechesContext.Provider value={{
-            pages: data?.pages.reduce((a, c) => ([c, ...a]), []),
+            speeches,
+            pages: data?.pages ?? [],
             fetchNextPage,
+            hasMore,
             isFetchingNextPage,
             isLoading,
             isError,

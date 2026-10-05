@@ -1,22 +1,12 @@
-import { useContext, useEffect, useState } from 'react';
-import { SearchContext } from '../../context/SearchContext';
-import { matchesSearch, normalizeSearchTerm } from '../../utils/search';
+import React from 'react';
 import { MemberAvatar } from '../MemberAvatar/MemberAvatar';
 import { MemberTag } from '../MemberTag/MemberTag';
 import { SpeechContent } from '../SpeechContent/SpeechContent';
 import './Speech.scss';
 
-export const Speech = ({memberId, attribution, time, content, ...props}) => {
-    const { searchString } = useContext(SearchContext);
-    const [ collapsed, setCollapsed ] = useState(false);
-    const normalizedSearch = normalizeSearchTerm(searchString);
-
-    useEffect(() => {
-        setCollapsed(Boolean(normalizedSearch) && !matchesSearch(content, normalizedSearch));
-    }, [normalizedSearch, content]);
-
+export const Speech = React.forwardRef(({ memberId, attribution, time, content, ...props }, ref) => {
     return (
-        <div className='Speech'>
+        <div className='Speech' ref={ref}>
             <div className='Speech-left'>
                 <MemberAvatar memberId={memberId} />
             </div>
@@ -25,12 +15,10 @@ export const Speech = ({memberId, attribution, time, content, ...props}) => {
                     <MemberTag memberId={memberId} fallbackText={attribution} />
                     <div className='Speech-timestamp'>{time}</div>
                 </div>
-                { !collapsed ?
-                    <SpeechContent>{content}</SpeechContent>
-                :
-                    <button className="Speech-viewmore" onClick={() => setCollapsed(false)}>tap to view</button>
-                }
+                <SpeechContent>{content}</SpeechContent>
             </div>
         </div>
     );
-};
+});
+
+Speech.displayName = 'Speech';

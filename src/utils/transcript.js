@@ -17,7 +17,9 @@ export const normalizeSpeech = (rawSpeech = {}) => {
     ...rest
   } = rawSpeech;
 
-  const memberId = politician_url?.split('/')[2] ?? null;
+  const memberId = politician_url
+    ? politician_url.split('/').filter(Boolean).pop() ?? null
+    : null;
 
   return {
     ...rest,
