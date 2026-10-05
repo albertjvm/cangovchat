@@ -23,7 +23,6 @@ export const Main = () => {
         searchString,
         selectedParty,
         dateRange = { startDate: '', endDate: '' },
-        hasAppliedSearch = false,
         setSearchOpen,
         isSearchLoading,
         setIsSearchLoading,

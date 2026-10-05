@@ -1,6 +1,5 @@
 import { useContext } from 'react';
 import { SearchContext } from '../../context/SearchContext';
-import { formatDisplayDate } from '../../utils/dateUtils';
 import { normalizeSearchTerm } from '../../utils/search';
 import './SearchResultsPanel.scss';
 
