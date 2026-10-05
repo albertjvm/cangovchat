@@ -1,15 +1,15 @@
 .SpeechContent {
     margin-top: 4px;
     margin-bottom: 4px;
-    color:rgb(29, 28, 29);
+    color: rgb(29, 28, 29);
     font-weight: 500;
     font-size: 14px;
+    line-height: 1.5;
 
-    .hightlight {
-        font-weight: bold;
-    }
-
-    .unhighlight {
-        color: rgba(black, .3);
+    mark.highlight {
+        font-weight: 700;
+        background: rgba(86, 147, 255, 0.18);
+        border-radius: 2px;
+        color: inherit;
     }
 }

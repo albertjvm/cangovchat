@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 import { SearchContext } from '../../context/SearchContext';
+import { matchesSearch, normalizeSearchTerm } from '../../utils/search';
 import { MemberAvatar } from '../MemberAvatar/MemberAvatar';
 import { MemberTag } from '../MemberTag/MemberTag';
 import { SpeechContent } from '../SpeechContent/SpeechContent';
@@ -8,10 +9,11 @@ import './Speech.scss';
 export const Speech = ({memberId, attribution, time, content, ...props}) => {
     const { searchString } = useContext(SearchContext);
     const [ collapsed, setCollapsed ] = useState(false);
+    const normalizedSearch = normalizeSearchTerm(searchString);
 
     useEffect(() => {
-        setCollapsed(searchString && !content.includes(searchString));
-    }, [searchString, content]);
+        setCollapsed(Boolean(normalizedSearch) && !matchesSearch(content, normalizedSearch));
+    }, [normalizedSearch, content]);
 
     return (
         <div className='Speech'>
